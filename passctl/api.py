@@ -1,4 +1,4 @@
-from log import error
+from passctl.log import error
 import requests
 import json
 

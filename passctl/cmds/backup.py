@@ -1,7 +1,7 @@
-from log import error, success
-from cmds import Command
-from api import API
-from encryption import Encryption
+from passctl.log import error, success
+from passctl.cmds import Command
+from passctl.api import API
+from passctl.encryption import Encryption
 import json
 
 class Backup(Command):

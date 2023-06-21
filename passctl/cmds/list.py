@@ -1,9 +1,7 @@
-from cmds import Command
-from api import API
-from encryption import Encryption
-from log import error, inp, success 
-import string
-import pyperclip
+from passctl.cmds import Command
+from passctl.api import API
+from passctl.encryption import Encryption
+from passctl.log import error, success 
 from random import choice
 from getpass import getpass
 import readline

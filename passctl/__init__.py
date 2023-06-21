@@ -1,7 +1,7 @@
-from commands import Commands
-from log import error, inp
+from passctl.commands import Commands
+from passctl.log import error, inp
 from getpass import getpass
-from config import Config
+from passctl.config import Config
 from sys import argv
 import readline
 

@@ -1,11 +1,11 @@
-from cmds.add import Add
-from cmds.get import Get
-from cmds.list import List
-from cmds.load import Load 
-from cmds.backup import Backup 
-from cmds.server import Server
-from cmds.delete import Del 
-from log import error, success
+from passctl.cmds.add import Add
+from passctl.cmds.get import Get
+from passctl.cmds.list import List
+from passctl.cmds.load import Load 
+from passctl.cmds.backup import Backup 
+from passctl.cmds.server import Server
+from passctl.cmds.delete import Del 
+from passctl.log import error, success
 import hashlib
 
 class Commands:
