@@ -1,5 +1,5 @@
-from cmds import Command
-from log import error, inp, success, info 
+from passctl.cmds import Command
+from passctl.log import error, inp, success, info 
 from random import choice
 from getpass import getpass
 import readline

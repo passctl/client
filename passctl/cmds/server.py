@@ -1,6 +1,6 @@
-from cmds import Command
-from api import API
-from log import error, inp, success, info
+from passctl.cmds import Command
+from passctl.api import API
+from passctl.log import error, inp, success, info
 from getpass import getpass
 import readline
 

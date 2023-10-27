@@ -1,7 +1,7 @@
 from rich.console import Console
 from rich.table import Table
-from log import error, success
-from cmds import Command
+from passctl.log import error, success
+from passctl.cmds import Command
 
 class Get(Command):
     def __init__(self) -> None:

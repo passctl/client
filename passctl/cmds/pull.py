@@ -1,6 +1,6 @@
-from cmds import Command
-from api import API
-from log import error, success 
+from passctl.cmds import Command
+from passctl.api import API
+from passctl.log import error, success 
 
 class Pull(Command):
     def __init__(self) -> None:

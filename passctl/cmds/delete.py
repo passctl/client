@@ -1,5 +1,5 @@
-from cmds import Command
-from log import error, success 
+from passctl.cmds import Command
+from passctl.log import error, success 
 
 class Del(Command):
     def __init__(self) -> None:

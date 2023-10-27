@@ -1,4 +1,4 @@
-from util import passdir
+from passctl.util import passdir
 from os import path
 import json
 

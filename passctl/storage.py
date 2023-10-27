@@ -1,5 +1,5 @@
-from encryption import Encryption
-from util import passdir
+from passctl.encryption import Encryption
+from passctl.util import passdir
 from os import path
 import json
 

@@ -1,4 +1,4 @@
-from commands import Commands
+from passctl.commands import Commands
 from sys import argv
 
 def main():

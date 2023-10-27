@@ -1,7 +1,7 @@
-from cmds import Command
+from passctl.cmds import Command
 from rich.console import Console
 from rich.table import Table
-from log import info 
+from passctl.log import info 
 import readline
 
 class List(Command):

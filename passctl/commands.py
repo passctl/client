@@ -1,13 +1,13 @@
-from cmds.add import Add
-from cmds.get import Get
-from cmds.list import List
-from cmds.server import Server
-from cmds.delete import Del 
-from cmds.pull import Pull 
-from cmds.push import Push 
-from config import Config
-from storage import Storage 
-from log import error, banner, info, inp 
+from passctl.cmds.add import Add
+from passctl.cmds.get import Get
+from passctl.cmds.list import List
+from passctl.cmds.server import Server
+from passctl.cmds.delete import Del 
+from passctl.cmds.pull import Pull 
+from passctl.cmds.push import Push 
+from passctl.config import Config
+from passctl.storage import Storage 
+from passctl.log import error, banner, info, inp 
 from getpass import getpass
 from rich.table import Table
 from rich.console import Console
