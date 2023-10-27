@@ -1,0 +1,2 @@
+import passctl
+passctl.main()

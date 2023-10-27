@@ -1,5 +1,5 @@
-from config import Config 
-from storage import Storage 
+from passctl.config import Config 
+from passctl.storage import Storage 
 
 class Command:
     def __init__(self, name: str, desc: str) -> None:
