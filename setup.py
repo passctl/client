@@ -9,6 +9,6 @@ setup(
         author="ngn13",
         description=DESCRIPTION,
         packages=find_packages(),
-        install_requires=["pycryptodome", "colorama", "requests"], 
+        install_requires=["pycryptodome", "rich", "requests"], 
         entry_points={'console_scripts': ['passctl=passctl.__init__:main']}
 )
