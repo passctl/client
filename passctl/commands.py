@@ -1,12 +1,18 @@
-from passctl.cmds.add import Add
-from passctl.cmds.get import Get
-from passctl.cmds.list import List
-from passctl.cmds.load import Load 
-from passctl.cmds.backup import Backup 
-from passctl.cmds.server import Server
-from passctl.cmds.delete import Del 
-from passctl.log import error, success
+from cmds.add import Add
+from cmds.get import Get
+from cmds.list import List
+from cmds.server import Server
+from cmds.delete import Del 
+from cmds.pull import Pull 
+from cmds.push import Push 
+from config import Config
+from storage import Storage 
+from log import error, banner, info, inp 
+from getpass import getpass
+from rich.table import Table
+from rich.console import Console
 import hashlib
+
 
 class Commands:
     def __init__(self):
@@ -14,30 +20,64 @@ class Commands:
             Add(), 
             Get(), 
             Del(), 
-            Load(),
             List(),
-            Backup(), 
-            Server()
+            Server(),
+            Pull(),
+            Push()
         ]
 
-    def run(self, name, cfg, master, args):
+    def run(self, name: str, args: list):
+        if name == "help":
+            self.help()
+            return
+
+        cmd = None
+        for c in self.list:
+            if c.name != name:
+                continue
+            cmd = c
+
+        if not cmd:
+            error(f"Command [dim]{name}[/] not found")
+            info("Run [dim]help[/] to get full list of the commands")
+            return
+
+        try:
+            master = inp("Master password", pwd=True)
+        except KeyboardInterrupt:
+            error("Aborted", start="\n")
+            return
+
+        cfg = Config()
+        if not cfg.read():
+            error("Cannot load the config")
+            return 
+
         hash = hashlib.sha512()
         hash.update(bytes(master, "utf-8"))
         
-        if not "master" in cfg.json.keys():
-            cfg.json["master"] = hash.hexdigest()
+        if not "master" in cfg.data.keys():
+            cfg.data["master"] = hash.hexdigest()
             cfg.write()
-        elif cfg.json["master"] != hash.hexdigest():
+        elif cfg.data["master"] != hash.hexdigest():
             error("Invalid master password")
+    
+        stg = Storage(master)
+        if not stg.read():
+            error("Cannot load the storage")
 
-        for c in self.list:
-            if c.name != name:
-                continue           
-            return c.run(cfg.json, master, args)
-
-        error(f"Command '{name}' not found")
+        cmd.exec(cfg, stg, args)
 
     def help(self):
-        success(f"passctl v1.0 | github.com/passctl/client")
+        banner()
+
+        console = Console()
+        table = Table()        
+
+        table.add_column("Command")
+        table.add_column("Description")
+
         for c in self.list:
-            print(f"{c.name}\t\t{c.desc}")
+            table.add_row(c.name, c.desc)
+
+        console.print(table)

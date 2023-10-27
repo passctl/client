@@ -1,62 +1,47 @@
-from passctl.cmds import Command
-from passctl.api import API
-from passctl.encryption import Encryption
-from passctl.log import error, inp, success 
-import string
-import pyperclip
+from cmds import Command
+from log import error, inp, success, info 
 from random import choice
 from getpass import getpass
 import readline
+import string
 
 class Add(Command):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(
             "add", 
             "Add an entry to the vault",
         )
 
-    def run(self, cfg, master, args):
-        if not "server" in cfg.keys():
-            error("Server is not set")
-
-        self.cfg = cfg
-        self.args = args
-        self.enc = Encryption(master)
-        self.api = API(self.cfg["server"], self.enc)
-
+    def run(self) -> None:
         if len(self.args)<1:
             error("Entry name not specified")
 
         entry = self.args[0]
-        vault = self.api.get()
+        vault = self.stg.data
 
         if entry in vault.keys():
             error("Entry already exists")
        
         try:
-            success("Creating the entry, leave the password empty for auto generation")
-            inp("Enter username:", end="")
-            usr = input(" ")
-            inp("Enter password:", end="")
-            pwd = getpass(" ")
+            info("Leave the password empty for auto generation")
+            usr = inp("Username")
+            pwd = inp("Password", pwd=True)
         except KeyboardInterrupt:
-            error("Keyboard interrupt, quitted", start="\n")
+            error("Aborted", start="\n")
             return 
 
         if pwd == "":
             chars = string.ascii_letters+string.digits+"!?=%.:$+-"
             for _ in range(20):
                 pwd += choice(chars)
-            success("Auto generated password copied to the clipboard")
-            pyperclip.copy(pwd)
+            success(f"Auto generated password: {pwd}")
         
-        vault[entry] = {"user": usr, "pass":pwd}
-        res = self.api.set(vault)
-        
-        if res["error"] == 3:
-            error("Can't add the entry, vault limit exceeded")
-        if res["error"] == 4:
-            error("Invalid server password")
-
+        vault[entry] = {
+            "user": usr, 
+            "pass":pwd
+        }
         success(f"Added {entry}")
-        return self.cfg
+
+        self.stg.data = vault
+        if not self.stg.write():
+            error("Cannot save the vault")

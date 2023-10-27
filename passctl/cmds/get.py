@@ -1,36 +1,30 @@
-from passctl.log import error, success
-from passctl.cmds import Command
-from passctl.api import API
-from passctl.encryption import Encryption
-import pyperclip
+from rich.console import Console
+from rich.table import Table
+from log import error, success
+from cmds import Command
 
 class Get(Command):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(
             "get", 
             "Read an entry from the vault",
         )
 
-    def run(self, cfg, master, args):
-        if not "server" in cfg.keys():
-            error("Server is not set")
-        
-        self.cfg = cfg
-        self.args = args
-        self.enc = Encryption(master)
-        self.api = API(self.cfg["server"], self.enc)
-
+    def run(self) -> None:
         if len(self.args)<1:
             error("No entry specified")
         
         entry = self.args[0]
-        vault = self.api.get()
+        vault = self.stg.data
 
         if not entry in vault.keys():
             error("Entry not found")
 
-        pyperclip.copy(vault[entry]["pass"])
-        success(f"Username: {vault[entry]['user']}")
-        success(f"Password: {vault[entry]['pass']}")
-        success("Password copied to the clipboard")
-        return self.cfg
+        console = Console()
+        table = Table()        
+        
+        table.add_column("Username")
+        table.add_column("Password")
+        table.add_row(vault[entry]["user"], vault[entry]["pass"])
+
+        console.print(table)

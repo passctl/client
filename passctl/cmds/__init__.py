@@ -1,7 +1,16 @@
+from config import Config 
+from storage import Storage 
+
 class Command:
-    def __init__(self, name, desc):
+    def __init__(self, name: str, desc: str) -> None:
         self.name = name
         self.desc = desc
 
-    def run(self, cfg, master, args):
+    def exec(self, cfg: Config, stg: Storage, args: list) -> None:
+        self.cfg = cfg
+        self.stg = stg
+        self.args = args
+        return self.run()
+
+    def run(self) -> None:
         return

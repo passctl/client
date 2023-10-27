@@ -1,37 +1,28 @@
-from passctl.cmds import Command
-from passctl.api import API
-from passctl.encryption import Encryption
-from passctl.log import error, success 
-from random import choice
-from getpass import getpass
+from cmds import Command
+from rich.console import Console
+from rich.table import Table
+from log import info 
 import readline
 
 class List(Command):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(
             "list", 
             "List the entries in the vault",
         )
 
-    def run(self, cfg, master, args):
-        if not "server" in cfg.keys():
-            error("Server is not set")
-
-        self.cfg = cfg
-        self.args = args
-        self.enc = Encryption(master)
-        self.api = API(self.cfg["server"], self.enc)
-
-        vault = self.api.get()
-
-        entries = ""
-        counter = 0
-        for k,v in vault.items():
-            counter += 1
-            if counter==1:
-                entries = k
-                continue 
-            entries += f", {k}"
+    def run(self) -> None:
+        vault = self.stg.data
+        info(f"Listing total of {len(vault.items())} entries")
         
-        success(f"Entries: {entries}")
-        return self.cfg
+        console = Console()
+        table = Table()                 
+
+        table.add_column("Name")
+        table.add_column("Username")
+        table.add_column("Password")
+
+        for k, v in vault.items():
+            table.add_row(k, v["user"], "*"*len(v["pass"]))
+       
+        console.print(table)

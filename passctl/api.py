@@ -1,41 +1,31 @@
-from passctl.log import error
 import requests
 import json
 
 class API:
-    def __init__(self, server, enc):
+    def __init__(self, server: dict) -> None:
         self.url = server["url"]
-        self.pw = server["pass"]
         self.key = server["key"]
-        self.enc = enc
 
-    def ping(self):
-        res = requests.get(self.url+"/api/ping")
+    def ping(self) -> str:
+        try:
+            res = requests.get(self.url+"/api/ping/"+self.key)
+        except:
+            return "Cannot reach the server"
+
         try:
             res = json.loads(res.text)
-            if res["error"]!=0:
-                return False
-            return True
+            if res["error"]=="":
+                return ""
+            return "Invalid server vault key"
         except:
-            return False
+            return "Bad response from the server" 
 
-    def get(self):
+    def get(self) -> dict:
         res = requests.get(self.url+"/api/get/"+self.key)
-        res = json.loads(res.text)
-        if res["error"] != 0:
-            error("Vault does not exists, this means your vault key has been deleted, update your server config")
+        return res.json() 
 
-        return json.loads(
-            self.enc.decrypt(res["vault"])
-        )
-
-    def gen(self):
-        res = requests.post(self.url+"/api/gen", json={"pass":self.pw})
-        return json.loads(res.text) 
-
-    def set(self, data):
+    def set(self, data: str) -> dict:
         res = requests.post(self.url+"/api/set/"+self.key, json={
-            "pass": self.pw, 
-            "vault": self.enc.encrypt(json.dumps(data))
+            "vault": data
         })
-        return json.loads(res.text)
+        return res.json() 

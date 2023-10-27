@@ -1,30 +1,28 @@
-from passctl.cmds import Command
-from passctl.api import API
-from passctl.encryption import Encryption
-from passctl.log import error, inp, success 
+from cmds import Command
+from api import API
+from log import error, inp, success, info
 from getpass import getpass
 import readline
 
 class Server(Command):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(
             "server", 
             "Set a passctl server",
         )
 
-    def run(self, cfg, master, args):
-        self.cfg = cfg
-        self.args = args
-        self.enc = Encryption(master)
+    def run(self) -> None:
+        cfg = self.cfg.data
 
         if len(self.args)<1:
-            if not "server" in self.cfg.keys():
+            if not "server" in cfg.keys():
                 error("URL not specified")
+                return
+
             success("Current server config:")
-            success(f"Pass:     {self.cfg['server']['pass']}")
-            success(f"Key:      {self.cfg['server']['key']}")
-            success(f"URL:      {self.cfg['server']['url']}")
-            success("Specify a URL to change the server config")
+            success(f"URL:   {cfg['server']['url']}")
+            success(f"Key:   {cfg['server']['key']}")
+            info("Specify a URL to change the server config")
             return
 
         url = self.args[0]
@@ -32,27 +30,21 @@ class Server(Command):
             error("Invalid URL")
         
         try:
-            inp("Enter server password:", end="")
-            srvpass = getpass(" ")
-            inp("Enter server key (leave empty to generate):", end="")
-            key = getpass(" ")
+            key = inp("Enter vault key", pwd=True)
         except KeyboardInterrupt:
-            error("Keyboard interrupt, quitted", start="\n")
+            error("Aborted", start="\n")
             return
 
-        self.cfg["server"] = {
+        cfg["server"] = {
             "url": url,
-            "pass": srvpass,
             "key": key
         }
         
-        self.api = API(self.cfg["server"], self.enc)
-        if key == "":
-            success("Requesting a key from the server")
-            res = self.api.gen()
-            if res["error"] == 4:
-                error("Invalid server password")
-            self.cfg["server"]["key"] = res["key"]
-        
+        self.api = API(cfg["server"])
+        res = self.api.ping()
+        if res != "":
+            error(res)
+
+        self.cfg.data = cfg
+        self.cfg.write()
         success("Server saved to the config")
-        return self.cfg 
