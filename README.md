@@ -1,6 +1,6 @@
 <div align="center">
     <h1>passctl | CLI client</h1>
-    <img href="assets/showcase.gif">
+    <img src="assets/showcase.gif">
     <h3>Passctl commad-line client written in python</h3>
 </div>
 
