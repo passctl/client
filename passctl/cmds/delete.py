@@ -24,7 +24,7 @@ class Del(Command):
                 continue
             nvault[k] = v
 
-        self.stg.data = vault
+        self.stg.data = nvault 
         if not self.stg.write():
             error("Cannot save the vault")
         
