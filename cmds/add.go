@@ -29,7 +29,6 @@ func Add() bool {
 
   master := GetMaster()
 
-USER:
   err := config.LoadEntries(master)
   if err != nil {
     lib.ErrorMsg("Failed to load entries", err)
@@ -41,6 +40,7 @@ USER:
     return false
   }
 
+USER:
   entry.User = lib.Input("Enter a username")
   if entry.User == "" {
     lib.Error("Username cannot be empty")
