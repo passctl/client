@@ -1,3 +1,2 @@
-passctl/__pycache__
-passctl/cmds/__pycache__
-venv
+release
+client
