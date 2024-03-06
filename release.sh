@@ -1,10 +1,10 @@
 #!/bin/bash -e
 mkdir -p release
 
-CGO_ENABLED=0 go -ldflags "-s -w" build
+CGO_ENABLED=0 go build -ldflags "-s -w"
 tar czvf release/passctl_linux-amd64.tar.gz client
 
-GOARCH=386 CGO_ENABLED=0 go -ldflags "-s -w" build
+GOARCH=386 CGO_ENABLED=0 go build -ldflags "-s -w" 
 tar czvf release/passctl_linux-386.tar.gz client
 
 rm -f client
